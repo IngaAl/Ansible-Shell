@@ -77,6 +77,16 @@ class AnsibleConfigurationParser(object):
             host_conf.groups = json_host.get('groups')
             if json_host.get('parameters'):
                 host_conf.parameters = dict((i['name'], i['value']) for i in json_host['parameters'])
+                params = host_conf.parameters
+                for param in params:
+                    if param.lower() == "branch":
+                        if params[param]:
+                            url_list = ansi_conf.playbook_repo.url.split("/")
+                            list_len = len(url_list)
+                            url_list[list_len - 2] = params[param]
+                            new_url = "/".join(url_list)
+                            ansi_conf.playbook_repo.url = new_url
+                            
             ansi_conf.hosts_conf.append(host_conf)
 
         return ansi_conf
